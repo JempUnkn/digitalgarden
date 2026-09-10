@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dashboard :: config editor</title>
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<script>
+  /* Gate check — this only stops someone from landing here without
+     going through admin/ first in the SAME tab session.
+     It's trivial to defeat from devtools (just set the key below),
+     so don't treat it as real access control. See the note in
+     admin/lock.js for the honest version of what this does and
+     doesn't protect against. */
+  if (sessionStorage.getItem("dash_unlocked") !== "1"){
+    window.location.replace("../admin/");
+  }
+</script>
+<div class="admin-wrap">
+  <div style="text-align:right; margin-bottom:-10px;">
+    <button id="logoutBtn" type="button" style="background:none;border:1px solid var(--border);color:var(--text-dim);font-family:var(--mono);font-size:11px;padding:6px 10px;">lock session</button>
+  </div>
+
+  <div class="admin-head">
+    <h1>config editor</h1>
+    <p>
+      This is a static site — there's no server to save to. Edit the fields below,
+      hit <b>generate config.js</b>, then download it and overwrite
+      <code>js/config.js</code> in the project. That's the whole deploy step.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-head">// identity</div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field"><label>handle</label><input id="f-handle"></div>
+        <div class="field"><label>aliases (comma separated)</label><input id="f-aliases"></div>
+      </div>
+      <div class="field">
+        <label>domain override (leave blank to auto-detect from the browser)</label>
+        <input id="f-domain" placeholder="e.g. k1ll3r.dev — blank = auto">
+      </div>
+      <div class="field"><label>hero tag line</label><input id="f-tag"></div>
+      <div class="field"><label>bio</label><textarea id="f-bio" rows="4"></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">// about / whois</div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field"><label>focus</label><input id="f-focus"></div>
+        <div class="field"><label>status</label><input id="f-status"></div>
+      </div>
+      <div class="field"><label>pgp fingerprint</label><input id="f-pgp"></div>
+      <div class="field"><label>contact note</label><textarea id="f-note" rows="2"></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">// ~/dir — projects</div>
+    <div class="section-body">
+      <div id="dir-list"></div>
+      <button class="add-btn" id="dir-list-add" type="button">+ add project</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">// ~/blog — posts</div>
+    <div class="section-body">
+      <div id="blog-list"></div>
+      <button class="add-btn" id="blog-list-add" type="button">+ add post</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">// playlist</div>
+    <div class="section-body">
+      <p class="output-note">
+        The id is the part of the Spotify track URL right after <code>/track/</code>
+        and before the <code>?si=</code>. Playback happens inside Spotify's own
+        embedded player, so this project never touches the actual audio file.
+      </p>
+      <div id="playlist-list"></div>
+      <button class="add-btn" id="playlist-list-add" type="button">+ add track</button>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary" id="generateBtn" type="button">generate config.js</button>
+    <button class="btn-secondary" id="downloadBtn" type="button">download file</button>
+    <button class="btn-secondary" id="copyBtn" type="button">copy to clipboard</button>
+  </div>
+
+  <div class="output-box" id="output-box">
+    <p class="output-note">
+      Copy this into <code>js/config.js</code> (or download it straight to that path)
+      and reload the site to see the changes.
+    </p>
+    <textarea id="output" readonly spellcheck="false"></textarea>
+  </div>
+
+  <a class="back-link" href="../">&larr; back to site</a>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="dashboard.js"></script>
+<script>
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    sessionStorage.removeItem("dash_unlocked");
+    window.location.href = "../admin/";
+  });
+</script>
+</body>
+</html>

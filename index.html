@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K1LL3R :: ~/root</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- BOOT SEQUENCE -->
+<div id="boot">
+  <div id="bootlines"></div>
+  <div id="enter-prompt">&gt; press <span>ENTER</span> or click to continue_</div>
+</div>
+<div class="flash" id="flash"></div>
+
+<!-- OVERLAYS -->
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<svg class="noise" width="100%" height="100%">
+  <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter>
+  <rect width="100%" height="100%" filter="url(#n)"/>
+</svg>
+
+<!-- CURSOR -->
+<div class="cur-dot" id="curDot"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- MAIN SITE -->
+<div id="site">
+  <header>
+    <div class="brand">
+      <img src="assets/img/avatar.jpg" alt="avatar">
+      <div class="name"><span data-handle>K1LL3R</span><span class="dot"> // root_access</span></div>
+    </div>
+    <nav id="nav">
+      <button data-target="home" class="active">~/home</button>
+      <button data-target="dir">~/dir</button>
+      <button data-target="blog">~/blog</button>
+      <button data-target="about">~/about</button>
+    </nav>
+    <div class="tools">
+      <a href="admin/" title="restricted area">[✎]</a>
+    </div>
+  </header>
+
+  <div class="termline" id="termline">
+    <span class="prompt">guest@voidnet</span>:<span class="cmd">~$</span> cd home
+  </div>
+
+  <main>
+
+    <!-- HOME -->
+    <section class="panel active" id="panel-home">
+      <div class="hero-top">
+        <div class="hero-photo">
+          <img src="assets/img/avatar.jpg" alt="subject photo">
+          <div class="cap">IMG_00K1.jpg</div>
+        </div>
+        <div style="flex:1; min-width:240px;">
+          <div class="hero-tag" id="heroTag">// tag</div>
+          <h1 class="glitch" id="heroTitle" data-text="K1LL3R.">K1LL3R.</h1>
+        </div>
+      </div>
+      <p class="lede" id="heroBio"></p>
+      <div class="stat-row" id="statRow"></div>
+      <div class="ascii">┌───────────────────────────────┐
+│ root@voidnet:~# whoami        │
+│ &gt; access restricted · level 3 │
+└───────────────────────────────┘</div>
+      <p class="lede" style="font-size:12px; color:var(--text-dim);">
+        Move through the tabs above like you're typing commands into a shell.
+        Anything in <b style="color:var(--text-dim)">~/dir</b> or <b style="color:var(--text-dim)">~/blog</b>
+        opens up if you click it.
+      </p>
+    </section>
+
+    <!-- DIR -->
+    <section class="panel" id="panel-dir">
+      <h1 class="glitch" data-text="~/projects">~/projects</h1>
+      <p class="lede">ls -la --sort=date 2&gt;/dev/null</p>
+      <div class="dir-head">
+        <div>PERMISSIONS</div><div>FILE</div><div>SIZE</div><div>DATE</div>
+      </div>
+      <div id="dirList"></div>
+    </section>
+
+    <!-- BLOG -->
+    <section class="panel" id="panel-blog">
+      <h1 class="glitch" data-text="~/blog">~/blog</h1>
+      <p class="lede">tail -f changelog.log</p>
+      <div id="blogList"></div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="panel" id="panel-about">
+      <h1 class="glitch" data-text="~/about">~/about</h1>
+      <p class="lede">whois <span data-handle style="text-transform:lowercase;">K1LL3R</span> --verbose</p>
+      <div class="whois" id="whoisBody"></div>
+      <p class="channel-note" id="whoisNote"></p>
+    </section>
+
+  </main>
+
+  <footer>
+    <div>connection: <span class="pulse">stable</span> · simulated latency: 42ms · <a href="admin/">sys/restricted</a></div>
+    <div id="clock">--:--:--</div>
+  </footer>
+
+  <!-- MUSIC PLAYER -->
+  <button id="playerToggle">♪ playlist</button>
+  <div id="playerPanel">
+    <div class="player-head">
+      <span>now_playing.m3u</span>
+      <span data-domain>domain</span>
+    </div>
+    <div class="player-list" id="trackList"></div>
+    <div class="player-embed" id="playerEmbed"></div>
+    <div class="player-embed-fallback" id="playerFallback"></div>
+    <div class="player-hint">
+      Pre-Alpha
+    </div>
+    <!--<div class="player-hint">
+      streamed through Spotify's own player — needs a Spotify account (free tier is fine).
+      if the player stays blank: some tracks are region-limited by the artist/label and
+      won't load everywhere, and third-party embeds can get blank when a page is opened
+      straight from disk (<code>file://…</code>) instead of a real server — try hosting
+      this (GitHub Pages, Netlify, or even <code>python3 -m http.server</code> locally) if
+      it's not showing anything.
+    </div>-->
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/player.js"></script>
+</body>
+</html>

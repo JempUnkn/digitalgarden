@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>restricted :: authentication required</title>
+<link rel="stylesheet" href="lock.css">
+</head>
+<body>
+  <div class="lock-box">
+    <div class="lock-head">
+      <span>voidnet</span>
+      <span class="lvl">LEVEL 3 ACCESS</span>
+    </div>
+
+    <div class="lock-ascii">┌────────────────────┐
+│  ACCESS RESTRICTED │
+└────────────────────┘</div>
+
+    <div class="lock-title">authentication required</div>
+    <div class="lock-sub">this session is being logged. enter the passphrase to reach the dashboard.</div>
+
+    <form id="lockForm" autocomplete="off">
+      <div class="lock-field">
+        <input type="password" id="pwInput" placeholder="passphrase" autocomplete="new-password" required>
+      </div>
+      <button class="lock-btn" id="unlockBtn" type="submit">unlock</button>
+      <div class="lock-status" id="lockStatus"></div>
+    </form>
+
+    <div class="lock-meta">
+      default passphrase is <code>changeme</code> — rotate it before you publish this
+      anywhere. see the comment at the top of <code>admin/lock.js</code> for how.
+      this gate is client-side only; treat it as a deterrent, not a lock.
+    </div>
+
+    <a class="lock-back" href="../">&larr; back to site</a>
+  </div>
+
+<script src="lock.js"></script>
+</body>
+</html>

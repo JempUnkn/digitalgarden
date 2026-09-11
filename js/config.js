@@ -101,11 +101,18 @@ const SITE_CONFIG = {
     note: "First contact goes through email, PGP-signed. If it's sensitive, say so in the first line and we'll move somewhere better."
   },
 
+  /*
+    playlist: filenames sitting in assets/song/. Title/artist are
+    parsed from the name itself: "title-artist.mp3" — everything
+    before the first "-" is the title, everything after (minus the
+    extension) is the artist. Any audio extension the browser can
+    play works (.mp3, .m4a, .wav, .ogg).
+  */
   playlist: [
-    { title: "never sorry (hardtekk)", artist: "bullish", id: "5wqeYYH5KBzfez6bybfRjg" },
-    { title: "Paparazzi - Agartha Hardstyle Slowed", artist: "FEARZ, prodByLone, ANDONIS", id: "5dEfYpxMPRXADQySOauUM6" },
-    { title: "TEK IT - HARDTEKK - TIKTOK VERSION", artist: "4cyzon, HussinBeats, prodarvee", id: "1EuzNIdGXoxtBJ4KwEZ5k3" },
-    { title: "E.T. (Hardtekk)", artist: "RVNGE, HARDSTYLE DEMON", id: "1BIfzNV3gCzON6Ylzx6DxI" },
-    { title: "Bang Bang (Hardstyle)", artist: "GoldZoro", id: "0k9q9cKMECUnWNRcH0Pi7Y" }
+    "never sorry (hardtekk)-bullish.mp3",
+    "paparazzi (agartha hardstyle slowed)-fearz.mp3",
+    "tek it (hardtekk tiktok version)-4cyzon.mp3",
+    "e.t. (hardtekk)-rvnge.mp3",
+    "bang bang (hardstyle)-goldzoro.mp3"
   ]
 };

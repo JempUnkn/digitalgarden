@@ -128,7 +128,20 @@ function initPlayer(){
     audio.onended = () => document.getElementById("npNext").click();
   }
 
+  function playRandom(){
+    if (!tracks.length) return;
+    // avoid repeating the exact same track twice in a row when there's more than one option
+    let i = Math.floor(Math.random() * tracks.length);
+    if (tracks.length > 1 && i === currentIndex){
+      i = (i + 1) % tracks.length;
+    }
+    loadTrack(i);
+  }
+
   renderList();
+
+  // expose a tiny API so main.js can trigger playback once the boot sequence finishes
+  window.playerAPI = { playRandom, audio };
 }
 
 window.initPlayer = initPlayer;

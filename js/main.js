@@ -111,7 +111,55 @@ function enterSite(){
     document.getElementById("boot").style.display = "none";
     document.getElementById("site").classList.add("show");
     startClock();
+    markBooted();
+    playRandomTrackOnEnter();
   }, 480);
+}
+
+/* ================= BOOT COOLDOWN (skip re-boot within 10s) ================= */
+const BOOT_COOLDOWN_MS = 10 * 1000;
+const BOOT_KEY = "voidnet_last_boot";
+
+function markBooted(){
+  try { localStorage.setItem(BOOT_KEY, String(Date.now())); } catch (e) {}
+}
+
+function shouldSkipBoot(){
+  try {
+    const last = parseInt(localStorage.getItem(BOOT_KEY), 10);
+    if (!last) return false;
+    return (Date.now() - last) < BOOT_COOLDOWN_MS;
+  } catch (e) {
+    return false;
+  }
+}
+
+function skipBootStraightToSite(){
+  document.getElementById("boot").style.display = "none";
+  document.getElementById("site").classList.add("show");
+  startClock();
+  markBooted(); // refresh the timestamp so the cooldown window keeps sliding
+  playRandomTrackOnEnter();
+}
+
+/* ================= MUSIC ON ENTER ================= */
+function playRandomTrackOnEnter(){
+  if (!window.playerAPI) return;
+  window.playerAPI.playRandom();
+  // browsers block autoplay-with-sound without a user gesture; if that happens,
+  // resume on the first interaction the visitor makes with the page
+  const audio = window.playerAPI.audio;
+  if (audio && audio.paused){
+    const resume = () => {
+      audio.play().catch(() => {});
+      window.removeEventListener("click", resume);
+      window.removeEventListener("keydown", resume);
+      window.removeEventListener("touchstart", resume);
+    };
+    window.addEventListener("click", resume, { once: true });
+    window.addEventListener("keydown", resume, { once: true });
+    window.addEventListener("touchstart", resume, { once: true });
+  }
 }
 
 /* ================= CURSOR ================= */
@@ -212,8 +260,14 @@ setInterval(() => {
 document.addEventListener("DOMContentLoaded", () => {
   renderSite();
   bindNav();
+  if (window.initPlayer) window.initPlayer();
+
+  if (shouldSkipBoot()){
+    skipBootStraightToSite();
+    return; // no need to arm the boot-typing / enter-key handlers
+  }
+
   document.getElementById("boot").addEventListener("click", enterSite);
   window.addEventListener("keydown", e => { if (e.key === "Enter") enterSite(); });
   setTimeout(typeLine, 350);
-  if (window.initPlayer) window.initPlayer();
 });

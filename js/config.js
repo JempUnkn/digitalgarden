@@ -109,10 +109,9 @@ const SITE_CONFIG = {
     play works (.mp3, .m4a, .wav, .ogg).
   */
   playlist: [
-    "never sorry (hardtekk)-bullish.mp3",
-    "paparazzi (agartha hardstyle slowed)-fearz.mp3",
-    "tek it (hardtekk tiktok version)-4cyzon.mp3",
-    "e.t. (hardtekk)-rvnge.mp3",
-    "bang bang (hardstyle)-goldzoro.mp3"
+    "never sorry (hardtekk) - bullish.mp3",
+    "Paparazzi - Agartha Hardstyle Slowed - FEARZ.mp3",
+    "TEK IT - HARDTEKK - TIKTOK VERSION - 4cyzon.mp3",
+    "E.T. (Hardtekk) - RVNGE.mp3"
   ]
 };

@@ -252,21 +252,31 @@ h1.glitch.zap::after{ animation:glitchB .35s steps(2) 1; }
   padding:10px 12px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-dim);
 }
 .player-list{ max-height:200px; overflow-y:auto; }
+.player-empty{ padding:16px 12px; font-size:11px; color:var(--text-dim); text-align:center; line-height:1.6; }
 .track-row{
-  display:block; width:100%; text-align:left; background:none; border:none; border-bottom:1px solid var(--border-dim);
-  color:var(--text); font-family:var(--mono); font-size:11.5px; padding:10px 12px;
+  display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+  background:none; border:none; border-bottom:1px solid var(--border-dim);
+  color:var(--text); font-family:var(--mono); font-size:11.5px; padding:8px 12px;
 }
 .track-row:hover, .track-row.active{ background:var(--panel); color:var(--blood-bright); }
-.track-row small{ display:block; color:var(--text-dim); font-size:10px; margin-top:2px; }
-.player-embed{ padding:10px; }
-.player-embed iframe{ border-radius:0; border:1px solid var(--border); display:none; }
-.player-embed iframe.show{ display:block; }
-.player-embed-fallback{ padding:0 10px; }
-.player-embed-fallback a{
-  display:block; text-align:center; font-size:10.5px; color:var(--text-dim);
-  border:1px dashed var(--border); padding:7px; margin-bottom:10px;
-}
-.player-embed-fallback a:hover{ color:var(--blood-bright); border-color:var(--blood); }
+.track-cover{ width:32px; height:32px; object-fit:cover; border:1px solid var(--border); flex-shrink:0; filter:grayscale(15%) contrast(1.05); }
+.track-meta{ flex:1; min-width:0; text-align:left; }
+.track-meta small{ display:block; color:var(--text-dim); font-size:10px; margin-top:2px; }
+
+/* now playing */
+.player-embed{ display:flex; gap:12px; padding:12px; }
+.np-cover{ flex-shrink:0; }
+.np-cover img{ width:64px; height:64px; object-fit:cover; border:1px solid var(--border); filter:grayscale(15%) contrast(1.05); }
+.np-info{ flex:1; min-width:0; }
+.np-title{ color:var(--text-bright); font-size:12.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.np-artist{ color:var(--text-dim); font-size:11px; margin-bottom:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.np-bar{ height:4px; background:var(--border); cursor:pointer; margin-bottom:6px; position:relative; }
+.np-bar-fill{ height:100%; background:var(--blood-bright); width:0%; pointer-events:none; }
+.np-time{ display:flex; align-items:center; justify-content:space-between; font-size:10px; color:var(--text-dim); gap:8px; }
+.np-controls{ display:flex; gap:10px; }
+.np-controls button{ background:none; border:none; color:var(--text-bright); font-size:14px; font-family:var(--mono); padding:0; }
+.np-controls button:hover{ color:var(--blood-bright); }
+
 .player-hint{ padding:10px 12px; font-size:10.5px; color:var(--text-dim); line-height:1.6; }
 .player-hint code{ color:var(--text); }
 

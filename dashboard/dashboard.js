@@ -85,16 +85,21 @@ function emptyPost(){ return { level:"INFO", date:"2026-01-01", category:"log", 
 function trackRow(t, i){
   const row = el(`<div class="list-item">
     <button class="rm" type="button">remove</button>
-    <div class="field-row">
-      <div class="field"><label>title</label><input data-k="title" value="${t.title}"></div>
-      <div class="field"><label>artist</label><input data-k="artist" value="${t.artist}"></div>
+    <div class="field">
+      <label>filename in assets/song/ (format: title-artist.ext)</label>
+      <input data-k="__file" value="${t}">
     </div>
-    <div class="field"><label>spotify track id (from the track URL)</label><input data-k="id" value="${t.id}"></div>
   </div>`);
-  bindListItem(row, cfg.playlist, i, "playlist-list", trackRow, emptyTrack());
+  row.querySelector("[data-k]").addEventListener("input", (e) => {
+    cfg.playlist[i] = e.target.value;
+  });
+  row.querySelector(".rm").addEventListener("click", () => {
+    cfg.playlist.splice(i, 1);
+    buildList("playlist-list", cfg.playlist, trackRow, emptyTrack());
+  });
   return row;
 }
-function emptyTrack(){ return { title:"track title", artist:"artist", id:"" }; }
+function emptyTrack(){ return ""; }
 
 function bindListItem(row, arr, i, containerId, rowBuilder, emptyItem){
   row.querySelectorAll("[data-k]").forEach(field => {

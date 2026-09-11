@@ -1,118 +1,134 @@
 /*
-  config.js
+  player.js
   ---------
-  Every piece of text the site shows lives here. Change a value, save,
-  reload the page - nothing else in the project needs to change.
+  Local audio player. Tracks live in js/config.js under
+  SITE_CONFIG.playlist as a flat list of filenames sitting in
+  assets/song/, e.g. "bullish-never sorry.mp3".
 
-  Don't want to open this file by hand every time? Open /admin, fill
-  the form, hit "generate config.js", and it'll hand you a fresh copy
-  of this exact file with your changes baked in. Drop it in js/ and
-  overwrite this one.
+  Title/artist are parsed straight from the filename: everything
+  before the first "-" is the title, everything after (minus the
+  extension) is the artist. No separate metadata, no cover image —
+  drop a file in assets/song/, add its name to the playlist array,
+  done.
 
-  domain: leave it null and the site reads window.location.hostname
-  on its own, so moving to a new domain never means touching code.
-  Set it manually only if you want to force a specific string (say,
-  you're testing on localhost but want the site to display something
-  else).
+  Playback runs through a single native Audio() object with fully
+  custom, terminal-themed controls — no browser chrome, no iframe.
 */
 
-const SITE_CONFIG = {
-  domain: null,
+function initPlayer(){
+  const toggleBtn = document.getElementById("playerToggle");
+  const panel = document.getElementById("playerPanel");
+  const list = document.getElementById("trackList");
+  const embedWrap = document.getElementById("playerEmbed");
+  const fallbackWrap = document.getElementById("playerFallback");
 
-  handle: "K1LL3R",
-  aliases: ["K1LL3R", "0xNull"],
+  const audio = new Audio();
+  const files = SITE_CONFIG.playlist || [];
+  const tracks = files.map(parseTrack);
+  let currentIndex = -1;
 
-  tag: "partially encrypted identity — last sync 3 days ago",
+  toggleBtn.addEventListener("click", () => {
+    panel.classList.toggle("open");
+  });
 
-  bio: "Independent researcher working the line between reverse engineering, offensive security and systems that probably shouldn't have been exposed to the internet in the first place. This place is a living dossier: part portfolio, part field log, part archive I still haven't decided whether to release in full.",
+  function parseTrack(file){
+    const dot = file.lastIndexOf(".");
+    const base = dot > -1 ? file.slice(0, dot) : file;
+    const dash = base.indexOf("-");
+    const title = dash > -1 ? base.slice(0, dash).trim() : base.trim();
+    const artist = dash > -1 ? base.slice(dash + 1).trim() : "";
+    return { file, title, artist };
+  }
 
-  stats: [
-    { k: "CVEs REPORTED", v: "07" },
-    { k: "BINARIES TAKEN APART", v: "120+" }
-  ],
-
-  projects: [
-    {
-      perm: "-rwxr-x--",
-      name: "packet_wraith",
-      ext: ".bin",
-      size: "2.4 MB",
-      date: "2026-06",
-      desc: "Passive sniffer that fingerprints encrypted traffic through timing analysis. Plain C, zero dependencies, built to run on whatever old hardware happens to be lying around.",
-      tags: ["c", "networking", "forensics"]
-    },
-    {
-      perm: "-rw-r--r--",
-      name: "unpacker_core",
-      ext: ".py",
-      size: "890 KB",
-      date: "2026-03",
-      desc: "Automated unpacking framework for binaries wrapped in custom packers. Finds the OEP through decreasing-entropy heuristics instead of hardcoded signatures.",
-      tags: ["python", "reversing"]
-    },
-    {
-      perm: "-rwx------",
-      name: "ghost_shell",
-      ext: ".sh",
-      size: "14 KB",
-      date: "2025-12",
-      desc: "A set of hardening and cleanup scripts for isolated lab environments. Strictly educational, strictly defensive - nothing here touches a system that isn't mine.",
-      tags: ["bash", "opsec"]
-    },
-    {
-      perm: "-rw-r--r--",
-      name: "signal_atlas",
-      ext: ".log",
-      size: "3.1 MB",
-      date: "2025-09",
-      desc: "A homegrown database of malware signatures pulled from a couple of honeypots I run at home, normalized into YARA rules as they come in.",
-      tags: ["yara", "malware"]
+  function renderList(){
+    if (!tracks.length){
+      list.innerHTML = `<div class="player-empty">no tracks in SITE_CONFIG.playlist</div>`;
+      return;
     }
-  ],
+    list.innerHTML = tracks.map((t, i) => `
+      <button class="track-row" data-i="${i}">
+        <span class="track-icon">♪</span>
+        <span class="track-meta">
+          ${t.title}
+          ${t.artist ? `<small>${t.artist}</small>` : ""}
+        </span>
+      </button>
+    `).join("");
+    list.querySelectorAll(".track-row").forEach(row => {
+      row.addEventListener("click", () => loadTrack(Number(row.dataset.i)));
+    });
+  }
 
-  posts: [
-    {
-      level: "INFO",
-      date: "2026-08-14",
-      category: "writeup",
-      title: "Taking apart a commercial crypter in 40 minutes",
-      body: "A walkthrough of how I found the in-memory decryption routine inside a crypter being sold on an underground forum, including the exact spot where its anti-debug checks quietly gave up. Published for educational purposes only - the sample itself isn't shared."
-    },
-    {
-      level: "WARN",
-      date: "2026-07-02",
-      category: "opinion",
-      title: "Why 'security through obscurity' still fools good people",
-      body: "Some thoughts on teams that mistake obfuscation for real security, and how much that costs once someone finally sits down and actually looks."
-    },
-    {
-      level: "INFO",
-      date: "2026-05-19",
-      category: "lab",
-      title: "Building a cheap honeypot with a Raspberry Pi",
-      body: "How I set up a low-cost honeypot on my home network to collect brute-force attempts and start spotting patterns in who's knocking and how."
-    }
-  ],
+  function loadTrack(i){
+    currentIndex = i;
+    const t = tracks[i];
 
-  about: {
-    focus: "reverse engineering · offensive security",
-    pgp: "1A2B 3C4D 5E6F 7890 ABCD · EF12 3456 7890 ABCD EF12",
-    status: "open to short collaborations",
-    note: "First contact goes through email, PGP-signed. If it's sensitive, say so in the first line and we'll move somewhere better."
-  },
+    list.querySelectorAll(".track-row").forEach(r => r.classList.remove("active"));
+    const activeRow = list.querySelector(`.track-row[data-i="${i}"]`);
+    if (activeRow) activeRow.classList.add("active");
 
-  /*
-    playlist: filenames sitting in assets/song/. Title/artist are
-    parsed from the name itself: "title-artist.mp3" — everything
-    before the first "-" is the title, everything after (minus the
-    extension) is the artist. Any audio extension the browser can
-    play works (.mp3, .m4a, .wav, .ogg).
-  */
-  playlist: [
-    "never sorry (hardtekk)-bullish.mp3",
-    "paparazzi (agartha hardstyle slowed)-fearz.mp3",
-    "tek it (hardtekk tiktok version)-4cyzon.mp3",
-    "e.t. (hardtekk)-rvnge.mp3",
-    "bang bang (hardstyle)-goldzoro.mp3"
-  ]
-};
+    audio.src = `assets/song/${encodeURIComponent(t.file)}`;
+    audio.play().catch(() => {});
+    renderPlayer(t);
+  }
+
+  function renderPlayer(t){
+    embedWrap.innerHTML = `
+      <div class="np-cover np-icon">♪</div>
+      <div class="np-info">
+        <div class="np-title">${t.title}</div>
+        ${t.artist ? `<div class="np-artist">${t.artist}</div>` : ""}
+        <div class="np-bar" id="npBar"><div class="np-bar-fill" id="npBarFill"></div></div>
+        <div class="np-time">
+          <span id="npCur">0:00</span>
+          <div class="np-controls">
+            <button id="npPrev" type="button" title="previous">⏮</button>
+            <button id="npPlay" type="button" title="play/pause">⏸</button>
+            <button id="npNext" type="button" title="next">⏭</button>
+          </div>
+          <span id="npDur">0:00</span>
+        </div>
+      </div>
+    `;
+    fallbackWrap.innerHTML = "";
+    bindTransport();
+  }
+
+  function fmt(sec){
+    if (!isFinite(sec)) return "0:00";
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  }
+
+  function bindTransport(){
+    const bar = document.getElementById("npBar");
+    const fill = document.getElementById("npBarFill");
+    const playBtn = document.getElementById("npPlay");
+    const curEl = document.getElementById("npCur");
+    const durEl = document.getElementById("npDur");
+
+    playBtn.onclick = () => { audio.paused ? audio.play() : audio.pause(); };
+    document.getElementById("npPrev").onclick = () => loadTrack((currentIndex - 1 + tracks.length) % tracks.length);
+    document.getElementById("npNext").onclick = () => loadTrack((currentIndex + 1) % tracks.length);
+    bar.onclick = (e) => {
+      if (!audio.duration) return;
+      const pct = (e.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
+      audio.currentTime = pct * audio.duration;
+    };
+
+    audio.onplay = () => { playBtn.textContent = "⏸"; };
+    audio.onpause = () => { playBtn.textContent = "▶"; };
+    audio.ontimeupdate = () => {
+      if (!audio.duration) return;
+      fill.style.width = (audio.currentTime / audio.duration * 100) + "%";
+      curEl.textContent = fmt(audio.currentTime);
+    };
+    audio.onloadedmetadata = () => { durEl.textContent = fmt(audio.duration); };
+    audio.onended = () => document.getElementById("npNext").click();
+  }
+
+  renderList();
+}
+
+window.initPlayer = initPlayer;

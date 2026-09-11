@@ -41,7 +41,7 @@ body{
 
 .lock-status{ min-height:18px; font-size:11.5px; margin-top:12px; color:var(--text-dim); }
 .lock-status.err{ color:var(--blood-bright); }
-.lock-status.ok{ color:#5c9c5c; }
+.lock-status.ok{ color:var(--blue-bright); }
 
 .lock-meta{ margin-top:20px; padding-top:16px; border-top:1px solid var(--border-dim); font-size:10.5px; color:var(--text-dim); line-height:1.7; }
 .lock-meta code{ color:var(--text); }

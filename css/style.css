@@ -11,6 +11,8 @@
   --text-bright:#ededed;
   --blood:#8f1016;
   --blood-bright:#d81f27;
+  --blue:#1c4fa0;
+  --blue-bright:#3d7fdb;
   --mono:'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace;
 }
 
@@ -75,14 +77,14 @@ a{ color:inherit; text-decoration:none; }
 /* ---------- boot screen ---------- */
 #boot{
   position:fixed; inset:0; z-index:20000;
-  background:#000; color:#9fa89f;
+  background:#000; color:#9fb3d6;
   padding:6vh 6vw; font-size:13px; line-height:1.7;
   display:flex; flex-direction:column; justify-content:flex-start;
   transition:opacity .5s ease, filter .5s ease;
 }
 #boot.hide{ opacity:0; filter:brightness(3) blur(6px); pointer-events:none; }
 #boot .line{ white-space:pre-wrap; }
-#boot .ok{ color:#5c9c5c; }
+#boot .ok{ color:var(--blue-bright); }
 #boot .warn{ color:var(--blood-bright); }
 #enter-prompt{
   margin-top:28px; opacity:0; transition:opacity .6s ease;
@@ -143,7 +145,7 @@ nav button.active{
   padding:8px 28px; font-size:11.5px; color:var(--text-dim);
   border-bottom:1px solid var(--border-dim); min-height:30px;
 }
-.termline .prompt{ color:#5c9c5c; }
+.termline .prompt{ color:var(--blue-bright); }
 .termline .cmd{ color:var(--text-bright); }
 
 main{ max-width:900px; margin:0 auto; padding:60px 28px 140px; }
@@ -170,7 +172,7 @@ h1.glitch::before, h1.glitch::after{
   opacity:0.8;
 }
 h1.glitch::before{ color:var(--blood-bright); clip-path:inset(0 0 60% 0); }
-h1.glitch::after{ color:#4a7a7a; clip-path:inset(60% 0 0 0); }
+h1.glitch::after{ color:var(--blue-bright); clip-path:inset(60% 0 0 0); }
 h1.glitch.zap::before{ animation:glitchA .35s steps(2) 1; }
 h1.glitch.zap::after{ animation:glitchB .35s steps(2) 1; }
 @keyframes glitchA{ 0%{transform:translate(0,0);} 30%{transform:translate(-4px,-2px);} 60%{transform:translate(3px,1px);} 100%{transform:translate(0,0);} }

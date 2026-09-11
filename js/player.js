@@ -68,8 +68,24 @@ function initPlayer(){
     if (activeRow) activeRow.classList.add("active");
 
     audio.src = `assets/song/${encodeURIComponent(t.file)}`;
-    audio.play().catch(() => {});
+    audio.play().catch(err => showTrackIssue(t, err));
     renderPlayer(t);
+  }
+
+  // surfaces load/playback failures instead of failing silently, so a
+  // missing/corrupt/empty audio file (e.g. a Git LFS pointer that never
+  // got resolved into the real .mp3) is obvious instead of just "nothing happens"
+  function showTrackIssue(t, err){
+    const npInfo = embedWrap.querySelector(".np-info");
+    if (!npInfo) return;
+    let box = npInfo.querySelector(".np-error");
+    if (!box){
+      box = document.createElement("div");
+      box.className = "np-error";
+      box.style.cssText = "margin-top:6px;font-size:11px;color:#ff5f5f;";
+      npInfo.appendChild(box);
+    }
+    box.textContent = `⚠ could not play "${t.file}" — file missing or invalid (check assets/song/, and Git LFS if used)`;
   }
 
   function renderPlayer(t){
@@ -126,6 +142,7 @@ function initPlayer(){
     };
     audio.onloadedmetadata = () => { durEl.textContent = fmt(audio.duration); };
     audio.onended = () => document.getElementById("npNext").click();
+    audio.onerror = () => { if (tracks[currentIndex]) showTrackIssue(tracks[currentIndex], audio.error); };
   }
 
   function playRandom(){

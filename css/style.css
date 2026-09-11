@@ -171,8 +171,8 @@ h1.glitch::before, h1.glitch::after{
   content:attr(data-text); position:absolute; left:0; top:0; width:100%; overflow:hidden;
   opacity:0.8;
 }
-h1.glitch::before{ color:var(--blood-bright); clip-path:inset(0 0 60% 0); }
-h1.glitch::after{ color:var(--blue-bright); clip-path:inset(60% 0 0 0); }
+h1.glitch::before{ color:var(--blue-bright); clip-path:inset(33.33% 0 33.33% 0); }
+h1.glitch::after{ color:var(--blood-bright); clip-path:inset(66.66% 0 0 0); }
 h1.glitch.zap::before{ animation:glitchA .35s steps(2) 1; }
 h1.glitch.zap::after{ animation:glitchB .35s steps(2) 1; }
 @keyframes glitchA{ 0%{transform:translate(0,0);} 30%{transform:translate(-4px,-2px);} 60%{transform:translate(3px,1px);} 100%{transform:translate(0,0);} }

@@ -3,161 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K1LL3R :: ~/root</title>
-
-<!-- Favicon (usando o avatar) -->
-<link rel="icon" href="assets/img/avatar.jpg" type="image/jpeg">
-<link rel="apple-touch-icon" href="assets/img/avatar.jpg">
-
-<!-- Open Graph (Discord, WhatsApp, Facebook, etc) -->
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="K1LL3R">
-<meta property="og:title" content="K1LL3R :: ~/root">
-<meta property="og:description" content="access restricted · level 3">
-<meta property="og:url" content="https://killer.nya.je/">
-<meta property="og:image" content="https://r4.wallpaperflare.com/wallpaper/585/10/366/anime-anime-girls-makima-chainsaw-man-chainsaw-man-hd-wallpaper-f90048ed21aaddabe637c87f902146dd.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="K1LL3R :: ~/root">
-<meta name="twitter:description" content="access restricted · level 3">
-<meta name="twitter:image" content="https://r4.wallpaperflare.com/wallpaper/585/10/366/anime-anime-girls-makima-chainsaw-man-chainsaw-man-hd-wallpaper-f90048ed21aaddabe637c87f902146dd.jpg">
-
-<!-- Cor do tema (barra do navegador mobile / embed accent no Discord) -->
-<meta name="theme-color" content="#0d0d0d">
-
-<link rel="stylesheet" href="css/style.css">
+<title>dashboard :: config editor</title>
+<link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
-
-<!-- BOOT SEQUENCE -->
-<div id="boot">
-  <div id="bootlines"></div>
-  <div id="enter-prompt">&gt; press <span>ENTER</span> or click to continue_</div>
-</div>
-<div class="flash" id="flash"></div>
-
-<!-- OVERLAYS -->
-<div class="scanlines"></div>
-<div class="vignette"></div>
-<svg class="noise" width="100%" height="100%">
-  <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter>
-  <rect width="100%" height="100%" filter="url(#n)"/>
-</svg>
-
-<!-- CURSOR -->
-<div class="cur-dot" id="curDot"></div>
-<div class="cur-ring" id="curRing"></div>
-
-<!-- MAIN SITE -->
-<div id="site">
-  <header>
-    <div class="brand">
-      <img src="assets/img/avatar.jpg" alt="avatar">
-      <div class="name"><span data-handle>K1LL3R</span><span class="dot"> // root_access</span></div>
-    </div>
-    <nav id="nav">
-      <button data-target="home" class="active">~/home</button>
-      <button data-target="dir">~/dir</button>
-      <button data-target="blog">~/blog</button>
-      <button data-target="about">~/about</button>
-    </nav>
-    <div class="tools">
-      <a href="admin/" title="restricted area">[✎]</a>
-    </div>
-  </header>
-
-  <div class="termline" id="termline">
-    <span class="prompt">guest@voidnet</span>:<span class="cmd">~$</span> cd home
+<script>
+  /* Gate check — this only stops someone from landing here without
+     going through admin/ first in the SAME tab session.
+     It's trivial to defeat from devtools (just set the key below),
+     so don't treat it as real access control. See the note in
+     admin/lock.js for the honest version of what this does and
+     doesn't protect against. */
+  if (sessionStorage.getItem("dash_unlocked") !== "1"){
+    window.location.replace("../admin/");
+  }
+</script>
+<div class="admin-wrap">
+  <div style="text-align:right; margin-bottom:-10px;">
+    <button id="logoutBtn" type="button" style="background:none;border:1px solid var(--border);color:var(--text-dim);font-family:var(--mono);font-size:11px;padding:6px 10px;">lock session</button>
   </div>
 
-  <main>
+  <div class="admin-head">
+    <h1>config editor</h1>
+    <p>
+      This is a static site — there's no server to save to. Edit the fields below,
+      hit <b>generate config.js</b>, then download it and overwrite
+      <code>js/config.js</code> in the project. That's the whole deploy step.
+    </p>
+  </div>
 
-    <!-- HOME -->
-    <section class="panel active" id="panel-home">
-      <div class="hero-top">
-        <div class="hero-photo">
-          <img src="assets/img/avatar.jpg" alt="subject photo">
-          <div class="cap">IMG_00K1.jpg</div>
-        </div>
-        <div style="flex:1; min-width:240px;">
-          <div class="hero-tag" id="heroTag">// tag</div>
-          <h1 class="glitch" id="heroTitle" data-text="K1LL3R.">K1LL3R.</h1>
-        </div>
+  <div class="section">
+    <div class="section-head">// identity</div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field"><label>handle</label><input id="f-handle"></div>
+        <div class="field"><label>aliases (comma separated)</label><input id="f-aliases"></div>
       </div>
-      <p class="lede" id="heroBio"></p>
-      <div class="stat-row" id="statRow"></div>
-      <div class="ascii">┌───────────────────────────────┐
-│ root@voidnet:~# whoami        │
-│ &gt; access restricted · level 3 │
-└───────────────────────────────┘</div>
-      <p class="lede" style="font-size:12px; color:var(--text-dim);">
-        Move through the tabs above like you're typing commands into a shell.
-        Anything in <b style="color:var(--text-dim)">~/dir</b> or <b style="color:var(--text-dim)">~/blog</b>
-        opens up if you click it.
+      <div class="field">
+        <label>domain override (leave blank to auto-detect from the browser)</label>
+        <input id="f-domain" placeholder="e.g. k1ll3r.dev — blank = auto">
+      </div>
+      <div class="field"><label>hero tag line</label><input id="f-tag"></div>
+      <div class="field"><label>bio</label><textarea id="f-bio" rows="4"></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">// about / whois</div>
+    <div class="section-body">
+      <div class="field-row">
+        <div class="field"><label>focus</label><input id="f-focus"></div>
+        <div class="field"><label>status</label><input id="f-status"></div>
+      </div>
+      <div class="field"><label>pgp fingerprint</label><input id="f-pgp"></div>
+      <div class="field"><label>contact note</label><textarea id="f-note" rows="2"></textarea></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">// ~/dir — projects</div>
+    <div class="section-body">
+      <div id="dir-list"></div>
+      <button class="add-btn" id="dir-list-add" type="button">+ add project</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">// ~/blog — posts</div>
+    <div class="section-body">
+      <div id="blog-list"></div>
+      <button class="add-btn" id="blog-list-add" type="button">+ add post</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">// playlist</div>
+    <div class="section-body">
+      <p class="output-note">
+        Each entry is just the filename sitting in <code>assets/song/</code>.
+        Name it <code>title-artist.ext</code> (e.g. <code>never sorry-bullish.mp3</code>)
+        — title and artist are parsed straight from that name, no image needed.
       </p>
-    </section>
-
-    <!-- DIR -->
-    <section class="panel" id="panel-dir">
-      <h1 class="glitch" data-text="~/projects">~/projects</h1>
-      <p class="lede">ls -la --sort=date 2&gt;/dev/null</p>
-      <div class="dir-head">
-        <div>PERMISSIONS</div><div>FILE</div><div>SIZE</div><div>DATE</div>
-      </div>
-      <div id="dirList"></div>
-    </section>
-
-    <!-- BLOG -->
-    <section class="panel" id="panel-blog">
-      <h1 class="glitch" data-text="~/blog">~/blog</h1>
-      <p class="lede">tail -f changelog.log</p>
-      <div id="blogList"></div>
-    </section>
-
-    <!-- ABOUT -->
-    <section class="panel" id="panel-about">
-      <h1 class="glitch" data-text="~/about">~/about</h1>
-      <p class="lede">whois <span data-handle style="text-transform:lowercase;">K1LL3R</span> --verbose</p>
-      <div class="whois" id="whoisBody"></div>
-      <p class="channel-note" id="whoisNote"></p>
-    </section>
-
-  </main>
-
-  <footer>
-    <div>connection: <span class="pulse">stable</span> · simulated latency: 42ms · <a href="admin/">sys/restricted</a></div>
-    <div id="clock">--:--:--</div>
-  </footer>
-
-  <!-- MUSIC PLAYER -->
-  <button id="playerToggle">♪ playlist</button>
-  <div id="playerPanel">
-    <div class="player-head">
-      <span>now_playing.m3u</span>
-      <span data-domain>domain</span>
+      <div id="playlist-list"></div>
+      <button class="add-btn" id="playlist-list-add" type="button">+ add track</button>
     </div>
-    <div class="player-list" id="trackList"></div>
-    <div class="player-embed" id="playerEmbed"></div>
-    <div class="player-embed-fallback" id="playerFallback"></div>
-    <div class="player-hint">
-      Pre-Alpha
-    </div>
-    <!--<div class="player-hint">
-      streamed through Spotify's own player — needs a Spotify account (free tier is fine).
-      if the player stays blank: some tracks are region-limited by the artist/label and
-      won't load everywhere, and third-party embeds can get blank when a page is opened
-      straight from disk (<code>file://…</code>) instead of a real server — try hosting
-      this (GitHub Pages, Netlify, or even <code>python3 -m http.server</code> locally) if
-      it's not showing anything.
-    </div>-->
   </div>
+
+  <div class="actions">
+    <button class="btn-primary" id="generateBtn" type="button">generate config.js</button>
+    <button class="btn-secondary" id="downloadBtn" type="button">download file</button>
+    <button class="btn-secondary" id="copyBtn" type="button">copy to clipboard</button>
+  </div>
+
+  <div class="output-box" id="output-box">
+    <p class="output-note">
+      Copy this into <code>js/config.js</code> (or download it straight to that path)
+      and reload the site to see the changes.
+    </p>
+    <textarea id="output" readonly spellcheck="false"></textarea>
+  </div>
+
+  <a class="back-link" href="../">&larr; back to site</a>
 </div>
 
-<script src="js/config.js"></script>
-<script src="js/main.js"></script>
-<script src="js/player.js"></script>
+<script src="../js/config.js"></script>
+<script src="dashboard.js"></script>
+<script>
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    sessionStorage.removeItem("dash_unlocked");
+    window.location.href = "../admin/";
+  });
+</script>
 </body>
 </html>
